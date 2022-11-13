@@ -1,50 +1,101 @@
-import React, { Component } from "react"
-import logo from "./logo.svg"
-import "./App.css"
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import Form from './components/common/form';
+import Home from './components/home';
+import {
+  Routes,
+  Route,
+  useNavigate
+} from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { app } from './firebase-config';
+import { collection, addDoc } from "firebase/firestore";
 
-class LambdaDemo extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { loading: false, msg: null }
+
+export const auth = getAuth(app);
+
+function App() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  let navigate = useNavigate();
+  const handleAction = (id) => {
+    const authentication = getAuth();
+    if (id === 1) {
+      signInWithEmailAndPassword(authentication, email, password)
+        .then((response) => {
+          navigate('/')
+          sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken)
+        })
+        .catch((error) => {
+          console.log(error.code)
+          if (error.code === 'auth/wrong-password') {
+            toast.error('Please check the Password');
+          }
+          if (error.code === 'auth/user-not-found') {
+            toast.error('Please check the Email');
+          }
+        })
+    }
+    if (id === 2) {
+      createUserWithEmailAndPassword(authentication, email, password)
+        .then((response) => {
+          navigate('/')
+          sessionStorage.setItem('Auth Token', response._tokenResponse.refreshToken)
+        })
+        .catch((error) => {
+          if (error.code === 'auth/email-already-in-use') {
+            toast.error('Email Already in Use');
+          }
+        })
+    }
   }
 
-  handleClick = api => e => {
-    e.preventDefault()
+  useEffect(() => {
+    let authToken = sessionStorage.getItem('Auth Token')
 
-    this.setState({ loading: true })
-    fetch("/.netlify/functions/" + api)
-      .then(response => response.json())
-      .then(json => this.setState({ loading: false, msg: json.msg }))
-  }
+    if (authToken) {
+      navigate('/')
+    }
+  }, [])
+  return (
+    <div className="App">
+      <>
+        <ToastContainer />
+        <Routes>
+          <Route
+            path='/login'
+            element={
+              <Form
+                title="Login"
+                setEmail={setEmail}
+                setPassword={setPassword}
+                handleAction={() => handleAction(1)}
+              />}
+          />
+          <Route
+            path='/register'
+            element={
+              <Form
+                title="Register"
+                setEmail={setEmail}
+                setPassword={setPassword}
+                handleAction={() => handleAction(2)}
+              />}
+          />
 
-  render() {
-    const { loading, msg } = this.state
-
-    return (
-      <p>
-        <button onClick={this.handleClick("hello")}>{loading ? "Loading..." : "Call Lambda"}</button>
-        <button onClick={this.handleClick("async-dadjoke")}>{loading ? "Loading..." : "Call Async Lambda"}</button>
-        <br />
-        <span>{msg}</span>
-      </p>
-    )
-  }
+          <Route
+            path='/'
+            element={
+              <Home />}
+          />
+        </Routes>
+      </>
+    </div>
+  );
 }
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <LambdaDemo />
-        </header>
-      </div>
-    )
-  }
-}
-
-export default App
+export default App;
