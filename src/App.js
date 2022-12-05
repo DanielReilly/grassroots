@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import Form from "./components/common/form";
+import Form from "./components/common/loginRegister";
 import Home from "./pages/home";
 import FindGame from "./pages/findGame";
 import FindPlayer from "./pages/findPlayer";
@@ -37,10 +37,10 @@ function App() {
         .catch((error) => {
           console.log(error.code);
           if (error.code === "auth/wrong-password") {
-            toast.error("Please check the Password");
+            toast.error("Please check your Password");
           }
           if (error.code === "auth/user-not-found") {
-            toast.error("Please check the Email");
+            toast.error("Please check your Email");
           }
         });
     }
@@ -74,6 +74,9 @@ function App() {
                 setEmail={setEmail}
                 setPassword={setPassword}
                 handleAction={() => handleAction(1)}
+                switcherHandlerText="Don't have an account?"
+                switcherHandlerCTA="Register Now"
+                switcherHandlerLink={"/register"}
               />
             }
           />
@@ -81,10 +84,13 @@ function App() {
             path="/register"
             element={
               <Form
-                title="Register"
+                title="Create Account"
                 setEmail={setEmail}
                 setPassword={setPassword}
                 handleAction={() => handleAction(2)}
+                switcherHandlerText="Already have an account?"
+                switcherHandlerCTA="Login"
+                switcherHandlerLink="/login"
               />
             }
           />

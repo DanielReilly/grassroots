@@ -19,15 +19,15 @@ export default function Home() {
   const handleLogout = () => {
     sessionStorage.removeItem("Auth Token");
     navigate("/login");
-  };
-
+  };  
+  
   useEffect(() => {
     let authToken = sessionStorage.getItem("Auth Token");
 
     if (!authToken) {
-      navigate("/login");
+      console.log("No Auth Token");
     }
-  }, [navigate]);
+  }, []);
 
   useEffect((users) => {
     const getUsers = async () => {
