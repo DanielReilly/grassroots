@@ -5,8 +5,7 @@ import { collection, getDocs } from "firebase/firestore";
 import {
   getAuth
 } from "firebase/auth";
-import Navbar from "../components/navbar";
-
+import Navbar from "../components/Navbar";
 
 const usersCollectionRef = collection(db, "users");
 
@@ -40,11 +39,13 @@ export default function Home() {
 
   return (
     <div>
-      <Navbar />
+    <Navbar />
       <main>
         <h1>Home</h1>
       </main>
-      <button onClick={handleLogout}>Log out</button>
+      <a href="/login">
+        <button>Log in</button>
+      </a>
     </div>
   );
 }

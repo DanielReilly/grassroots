@@ -1,8 +1,21 @@
 import React, { Component } from "react";
 import { collection, addDoc, getDocs } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-export class RegisterPlayer extends Component {
-  render() {
+export default function RegisterPlayer() {
+
+
+    let navigate = useNavigate();
+
+    useEffect(() => {
+      let authToken = sessionStorage.getItem("Auth Token");
+
+      if (!authToken) {
+        navigate("/login");
+      }
+    }, [navigate]);
+
     return (
       <>
 
@@ -227,6 +240,3 @@ export class RegisterPlayer extends Component {
         </div>
       </>
     );}
-}
-
-export default RegisterPlayer;

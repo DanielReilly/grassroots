@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import Form from "./components/common/loginRegister";
-import Home from "./pages/home";
-import FindGame from "./pages/findGame";
-import FindPlayer from "./pages/findPlayer";
-import Debrief from "./pages/debrief";
-import PlayerReports from "./pages/playerReports";
+import Form from "./components/common/LoginRegister";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import FindGame from "./pages/FindGame";
+import FindPlayer from "./pages/FindPlayer";
+import Debrief from "./pages/Debrief";
+import PlayerReports from "./pages/PlayerReports";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import {
   getAuth,
@@ -28,7 +29,7 @@ function App() {
     if (id === 1) {
       signInWithEmailAndPassword(authentication, email, password)
         .then((response) => {
-          navigate("/");
+          navigate("/dashboard");
           sessionStorage.setItem(
             "Auth Token",
             response._tokenResponse.refreshToken
@@ -47,7 +48,7 @@ function App() {
     if (id === 2) {
       createUserWithEmailAndPassword(authentication, email, password)
         .then((response) => {
-          navigate("/");
+          navigate("/dashboard");
           sessionStorage.setItem(
             "Auth Token",
             response._tokenResponse.refreshToken
@@ -95,6 +96,7 @@ function App() {
             }
           />
           <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/games" element={<FindGame />} />
           <Route path="/players" element={<FindPlayer />} />
           <Route path="/debrief" element={<Debrief />} />
